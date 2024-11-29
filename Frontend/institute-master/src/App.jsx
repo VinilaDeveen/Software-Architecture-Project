@@ -18,10 +18,8 @@ import AddExam from './pages/addexam/AddExam';
 import AddDocument from './pages/adddocument/AddDocument';
 import DocumentTable from './component/documenttable/DocumentTable';
 import DocumentView from './pages/documentView/DocumentView';
-import CardTable from './component/cardtable/CardTable';
-import AddCard from './pages/addcard/AddCard';
-import CardView from './pages/cardview/CardView';
-import AttendanceTable from './component/attendancetable/AttendanceTable';
+import FeeCardTable from './component/feecardtable/FeeCardTable';
+import MarkAttendence from './pages/markattendence/MarkAttendence';
 
 function App() {
   return (
@@ -42,10 +40,8 @@ function App() {
               <Route path="/documenttable/:id" element={<DocumentView />} />
               <Route path="/documenttable/adddocument" element={<AddDocument />} />
               <Route path="/documenttable" element={<DocumentTable />} />
-              <Route path="/cardtable" element={<CardTable />} />
-              <Route path="/cardtable/addcard" element={<AddCard />} />
-              <Route path="/cardtable/:id" element={<CardView />} />
-              <Route path="/cardtable/attendanceTable/" element={<AttendanceTable />} />
+              <Route path='/feecardtable/:studId' element={<FeeCardTable/>}/>
+              <Route path="/markAttendance/:cardId" element={<MarkAttendence/>} />
             </Route>
             <Route path='/' element={<AdminLogin/>}/>
             <Route path='/register' element={<AdminReg/>}/>

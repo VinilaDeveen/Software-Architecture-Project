@@ -31,4 +31,6 @@ public class ExamMark {
     @ManyToOne
     @JoinColumn(name = "exam_id")
     private Exam exam;
+
+
 }

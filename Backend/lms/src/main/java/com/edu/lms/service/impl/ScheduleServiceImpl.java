@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.edu.lms.entity.Schedule;
 import com.edu.lms.exception.InvalidScheduleException;
-import com.edu.lms.exception.ScheduleAlreadyExistsException;
 import com.edu.lms.exception.ScheduleNotFoundException;
 import com.edu.lms.repository.ScheduleRepository;
 import com.edu.lms.service.ScheduleService;

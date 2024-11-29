@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { Link } from 'react-router-dom';
 import Sidebar from '../sidebar/Sidebar';
 import Grid from '@mui/material/Grid';
@@ -68,6 +69,14 @@ function Studenttable() {
                 View
               </div>
             </Link>
+
+            <Link to={`/feecardtable/${params.row.studId}`}>
+              <div className='bg-cover mt-2 px-4 h-[35px] bg-green-700 text-slate-50 rounded-3xl flex items-center justify-center hover:bg-green-900'>
+                <AttachMoneyIcon className='mr-2' />
+                Fee
+              </div>
+            </Link>
+            
             <div
               className='bg-cover mt-2 px-2 h-[35px] bg-red-500 text-slate-50 rounded-3xl flex items-center justify-center hover:bg-red-900 cursor-pointer'
               onClick={() => handleDelete(params.row.studId)}

@@ -7,5 +7,4 @@ import com.edu.lms.entity.ExamMark;
 
 @Repository
 public interface ExamMarkRepo extends JpaRepository<ExamMark, Long>{
-    
 }

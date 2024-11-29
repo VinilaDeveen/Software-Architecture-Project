@@ -1,9 +1,6 @@
 package com.edu.lms.exception;
 
-import java.util.Date;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -75,6 +72,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
+    @ExceptionHandler(value = ExamMarkAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleExamMarkAlreadyExists(ExamAlreadyExistsException exception) {
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
+    }
+
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGeneralException(Exception exception) {
@@ -121,10 +124,10 @@ public class GlobalExceptionHandler {
 
     
     /*Card Entity */
-    @ExceptionHandler(value = NoDataFoundExeption.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNoDataFoundExeption(NoDataFoundExeption exeption){
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exeption.getMessage());
+    @ExceptionHandler(value = CardNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleCardNotFoundException(CardNotFoundException exception){
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
     
 }

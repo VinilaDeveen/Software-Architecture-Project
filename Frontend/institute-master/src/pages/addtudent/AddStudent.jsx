@@ -70,8 +70,6 @@ function AddStudent() {
                 console.error('Error adding the student:', error.response || error.message);
                 alert('Failed to add student. Please try again later.');
             }
-        } else {
-            alert('Please fill in all fields.');
         }
     };
 

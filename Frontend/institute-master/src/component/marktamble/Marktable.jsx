@@ -14,22 +14,22 @@ function Marktable() {
     const { isAuthenticated, jwtToken } = useAuth();
     const [marks, setMarks] = React.useState([]);
     const [id, setId] = useState('');
-    const [mark, setMark] = useState();
+    const [mark, setMark] = useState('');
     const { examId } = useParams();
-    const [ examMarkId, setMarkId ] = useState();
+    const [examMarkId, setMarkId] = useState();
     const [isEditing, setIsEditing] = useState(false);
+    const [errors, setErrors] = useState({ id: false, mark: false });
 
     React.useEffect(() => {
         if (isAuthenticated) {
-          console.log("Exam ID:", examId); 
-          loadMarks();
+            loadMarks();
         }
-    }, [isAuthenticated,examId]);
+    }, [isAuthenticated, examId]);
 
     const config = {
         headers: {
-            Authorization: `Bearer ${jwtToken}`
-        }
+            Authorization: `Bearer ${jwtToken}`,
+        },
     };
 
     async function loadMarks() {
@@ -46,102 +46,95 @@ function Marktable() {
             console.error("Error fetching marks:", error);
         }
     }
-    
+
+    const validateForm = () => {
+        const newErrors = {
+            id: !id.trim(),
+            mark: !mark.trim(),
+        };
+        setErrors(newErrors);
+        return !Object.values(newErrors).some((error) => error);
+    };
 
     async function handleSubmit() {
-      if (isEditing) {
-        const updatemark = {
-            id: id ,
-            mark: mark,
-            examId: examId,
-        };
-  
-        const response = await axios.put(`http://localhost:8080/api/v1/examMark/${examMarkId}`,updatemark, config)
-          .then(response => {
-            loadMarks();
-            console.log('Mark details updated:', response.data);
-        })
-        .catch(error => {
-            console.error("There was an error updating the mark!", error);
-        });
-      } else {
-        const data = {
-          id: id,
-          mark: mark,
-          examId: examId, 
-        };
-  
-        try {
-            const response = await axios.post(`http://localhost:8080/api/v1/examMark`, data, config);
-            console.log('Mark details updated:', response.data);
-            loadMarks(); 
-        } catch (error) {
-            console.error("There was an error updating the mark!", error);
+        if (!validateForm()) {
+            return;
         }
-      }
+
+        const data = { id, mark, examId };
+        try {
+            if (isEditing) {
+                await axios.put(`http://localhost:8080/api/v1/examMark/${examMarkId}`, data, config);
+                console.log('Mark updated successfully');
+            } else {
+                await axios.post(`http://localhost:8080/api/v1/examMark`, data, config);
+                console.log('Mark added successfully');
+            }
+            loadMarks();
+            clearFields();
+        } catch (error) {
+            console.error("Error saving the mark:", error);
+        }
+    }
+
+    function clearFields() {
+        setId('');
+        setMark('');
+        setIsEditing(false);
+        setErrors({ id: false, mark: false });
     }
 
     const handleEditStudent = (student) => {
         setId(student.id);
-        setMark(student.mark); 
+        setMark(student.mark);
         setIsEditing(true);
-        setMarkId(student.examMarkId)
-        console.log("ExamMarkId:", student.examMarkId)
+        setMarkId(student.examMarkId);
     };
-    
 
     const handleDelete = (examMarkId) => {
         if (window.confirm("Are you sure you want to delete this mark?")) {
-          axios.delete(`http://localhost:8080/api/v1/examMark/${examMarkId}`,config)
-            .then(response => {
-              loadMarks();
-            })
-            .catch(error => {
-              console.error("There was an error deleting the mark!", error);
-            });
+            axios.delete(`http://localhost:8080/api/v1/examMark/${examMarkId}`, config)
+                .then(() => loadMarks())
+                .catch((error) => console.error("Error deleting the mark:", error));
         }
-      };
-  
+    };
 
-  const columns = [
-    { field: 'examMarkId', headerName: 'ID', width: 90 },
-    { field: 'id', headerName: 'Student ID', width: 150 },
-    { field: 'studName', headerName: 'Name', width: 250 },
-    { field: 'mark', headerName: 'Mark', width: 100 },
-  ];
+    const columns = [
+        { field: 'examMarkId', headerName: 'ID', width: 90 },
+        { field: 'id', headerName: 'Student ID', width: 150 },
+        { field: 'studName', headerName: 'Name', width: 250 },
+        { field: 'mark', headerName: 'Mark', width: 100 },
+    ];
 
     const actionColumn = [
-      {
-          field: 'action',
-          headerName: 'Action',
-          width: 350,
-          renderCell: (params) => (
-              <div className='flex gap-2'>
-                  <div
-                      className='bg-cover mt-2 px-2 h-[35px] bg-green-700 text-slate-50 rounded-3xl flex items-center justify-center hover:bg-green-900 cursor-pointer'
-                      onClick={() => handleEditStudent(params.row)}
-                  >
-                      <RemoveRedEyeRoundedIcon className='mr-2' />
-                      Update
-                  </div>
-                  <div
-                      className='bg-cover mt-2 px-2 h-[35px] bg-red-500 text-slate-50 rounded-3xl flex items-center justify-center hover:bg-red-900 cursor-pointer'
-                      onClick={() => handleDelete(params.row.examMarkId)}
-                  >
-                      <DeleteRoundedIcon className='mr-2' />
-                      Delete
-                  </div>
-              </div>
-          ),
-      },
-  ];
-  
+        {
+            field: 'action',
+            headerName: 'Action',
+            width: 350,
+            renderCell: (params) => (
+                <div className='flex gap-2'>
+                    <div
+                        className='bg-cover mt-2 px-2 h-[35px] bg-green-700 text-slate-50 rounded-3xl flex items-center justify-center hover:bg-green-900 cursor-pointer'
+                        onClick={() => handleEditStudent(params.row)}
+                    >
+                        <RemoveRedEyeRoundedIcon className='mr-2' />
+                        Update
+                    </div>
+                    <div
+                        className='bg-cover mt-2 px-2 h-[35px] bg-red-500 text-slate-50 rounded-3xl flex items-center justify-center hover:bg-red-900 cursor-pointer'
+                        onClick={() => handleDelete(params.row.examMarkId)}
+                    >
+                        <DeleteRoundedIcon className='mr-2' />
+                        Delete
+                    </div>
+                </div>
+            ),
+        },
+    ];
 
     return (
         <div className='flex'>
-            <div>
-                <Sidebar />
-            </div>
+            <Sidebar />
             <div className='flex-1'>
                 <div className='container py-10 px-3 lg:px-10'>
                     <Grid container justifyContent='space-between' alignItems='center' className='mb-5'>
@@ -155,23 +148,27 @@ function Marktable() {
                                 <label className='flex pt-8 text-lg text-slate-800'>Student ID:</label>
                                 <input
                                     type="text"
-                                    name='id'
                                     value={id}
                                     onChange={(e) => setId(e.target.value)}
                                     placeholder="Enter student's ID"
-                                    className='border-b-2 border-slate-300 w-full pt-3 placeholder:text-slate-400'
+                                    className={`border-b-2 w-full pt-3 placeholder:text-slate-400 ${
+                                        errors.id ? 'border-red-500' : 'border-slate-300'
+                                    }`}
                                 />
+                                {errors.id && <span className="text-red-500">Student ID is required.</span>}
                             </div>
                             <div className='w-[500px]'>
                                 <label className='flex pt-8 text-lg text-slate-800'>Mark:</label>
                                 <input
                                     type="number"
-                                    name='mark'
                                     value={mark}
                                     onChange={(e) => setMark(e.target.value)}
                                     placeholder="Enter mark"
-                                    className='border-b-2 border-slate-300 w-full pt-3 outline-none placeholder:text-slate-400'
+                                    className={`border-b-2 w-full pt-3 placeholder:text-slate-400 ${
+                                        errors.mark ? 'border-red-500' : 'border-slate-300'
+                                    }`}
                                 />
+                                {errors.mark && <span className="text-red-500">Mark is required.</span>}
                             </div>
                             <div className='w-full'>
                                 <input
@@ -190,9 +187,7 @@ function Marktable() {
                             getRowId={(row) => row.examMarkId}
                             initialState={{
                                 pagination: {
-                                    paginationModel: {
-                                        pageSize: 7,
-                                    },
+                                    paginationModel: { pageSize: 7 },
                                 },
                             }}
                             pageSizeOptions={[7]}

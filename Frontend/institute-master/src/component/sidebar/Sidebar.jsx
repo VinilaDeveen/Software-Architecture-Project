@@ -46,15 +46,7 @@ const Sidebar = () => {
                             <ArticleIcon sx={{fontSize:30}}/>
                             <span className='ml-2'>Documents</span>
                         </li>
-                    </Link>
-
-                    <Link to="/cardtable">
-                        <li className='flex items-center px-5 sm:px-14 py-3 hover:bg-slate-50'>
-                            <ReceiptIcon sx={{fontSize:30}}/>
-                            <span className='ml-2'>Fee</span>
-                        </li>
-                    </Link>
-                
+                    </Link>               
                     
                     <li className='absolute bottom-0 left-0 flex items-center px-5 sm:px-14 py-3 hover:bg-slate-50 hover:w-full cursor-pointer' onClick={logout}>
                         <LogoutRoundedIcon className='mr-4'/>
